@@ -74,8 +74,31 @@
 		{% endfor %}
 	</div>
 </section>
-
-<a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
-
+<div class="col-sm-4">	
+		<a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+		<button id="deleteVenue" data-id="{{ venue.id }}" class="btn btn-danger btn-lg pull-right">Delete</button>
+</div>
 {% endblock %}
-
+{% block script %}
+	<script type="text/javascript">
+	  const venue = document.getElementById('deleteVenue');
+		venue.addEventListener('click', function() {
+		  let deleteVenue = confirm("Delete this Venue!");
+		  if(deleteVenue){
+		  	console.log('Delete'+ this.dataset.id)
+		  	 fetch('/venues/' +this.dataset.id, {
+		  	 		method: 'DELETE',
+		  	 		headers: {
+		  	 			'content-type': 'application/json'
+		  	 		}
+		  	 })
+		  	 .then(data => {
+		  	 	  if(data.status == 200){
+		  	 	  		 window.location.href = "/";
+		  	 	  }
+		  	 })
+		  	 
+		  }
+		});
+	</script>
+{% endblock %}
