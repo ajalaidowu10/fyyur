@@ -236,4 +236,10 @@ class ArtistForm(Form):
     seeking_description = StringField(
             'seeking_description'
      )
+    avail_from = StringField(
+            'avail_from', validators=[DataRequired()]
+     )
+    avail_to = StringField(
+            'avail_to', validators=[DataRequired()]
+     )
 
