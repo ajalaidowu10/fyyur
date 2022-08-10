@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask_wtf import Form
+from flask_wtf import FlaskForm as Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
 
@@ -235,5 +235,11 @@ class ArtistForm(Form):
 
     seeking_description = StringField(
             'seeking_description'
+     )
+    avail_from = StringField(
+            'avail_from', validators=[DataRequired()]
+     )
+    avail_to = StringField(
+            'avail_to', validators=[DataRequired()]
      )
 

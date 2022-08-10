@@ -1,0 +1,6 @@
+# dependencies
+/node_modules
+
+#sublime project setting
+fyyur.sublime-project
+fyyur.sublime-workspace
