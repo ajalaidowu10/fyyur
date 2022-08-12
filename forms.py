@@ -157,7 +157,7 @@ class ArtistForm(Form):
 
         for value in field.data:
             if value not in genres_list:
-                raise ValidationError(f'Invalid genres value{value}')
+                raise ValidationError(f'Invalid genres value {value}')
         pass
     name = StringField(
         'name', validators=[DataRequired()]
