@@ -48,10 +48,10 @@ app.jinja_env.filters['datetime'] = format_datetime
 def index():
   venues = db.session.query(Venue.id, Venue.name).\
                       order_by(Venue.created_at).\
-                      limit(10).all();
+                      limit(10).all()
   artists = db.session.query(Artist.id, Artist.name).\
                       order_by(Artist.created_at).\
-                      limit(10).all();
+                      limit(10).all()
   return render_template('pages/home.html', venues=venues, artists=artists)
 
 #  Venues
@@ -64,7 +64,7 @@ def venues():
   data = []
   venue_city = ''
   venues = db.session.query(Venue.id, Venue.name, Venue.city, Venue.state).\
-                      order_by(Venue.city, Venue.state).all();
+                      order_by(Venue.city, Venue.state).all()
   current_time = datetime.now()
   for venue in venues:
     num_upcoming_shows = db.session.query(Show.id).\
@@ -87,7 +87,7 @@ def venues():
                                         'name': venue.name,
                                         'num_upcoming_shows': num_upcoming_shows
                                     })
-  return render_template('pages/venues.html', areas=data);
+  return render_template('pages/venues.html', areas=data)
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
@@ -164,6 +164,10 @@ def create_venue_submission():
   # TODO: modify data to be the data object returned from db insertion
   form = VenueForm()
   error = False
+  if not form.validate_on_submit():
+    for error in form.errors.items():
+      flash(error[1].pop(0))
+    return render_template('forms/new_artist.html', form=form)
   try:
     venue = Venue(
                     name=form.name.data,
@@ -320,8 +324,12 @@ def edit_artist_submission(artist_id):
   # artist record with ID <artist_id> using the new attributes
   form = ArtistForm()
   error = False
+  artist = Artist.query.get(artist_id)
+  if not form.validate_on_submit():
+    for error in form.errors.items():
+      flash(error[1].pop(0))
+    return render_template('forms/new_artist.html', form=form, artist=artist)
   try:
-    artist = Artist.query.get(artist_id);
     artist.name=form.name.data
     artist.city=form.city.data
     artist.state=form.state.data
@@ -332,6 +340,8 @@ def edit_artist_submission(artist_id):
     artist.facebook_link=form.facebook_link.data
     artist.seeking_venue=form.seeking_venue.data
     artist.seeking_description=form.seeking_description.data
+    artist.avail_from=form.avail_from.data
+    artist.avail_to=form.avail_to.data
 
     db.session.add(artist)
     db.session.commit()
@@ -351,7 +361,7 @@ def edit_artist_submission(artist_id):
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   # TODO: populate form with values from venue with ID <venue_id>
-  venue = Venue.query.get(venue_id);
+  venue = Venue.query.get(venue_id)
   form = VenueForm(
           name=venue.name,
           genres=venue.genres,
@@ -373,8 +383,13 @@ def edit_venue_submission(venue_id):
   # venue record with ID <venue_id> using the new attributes
   form = VenueForm()
   error = False
+  venue = Venue.query.get(venue_id)
+  if not form.validate_on_submit():
+    print(form.genres.data)
+    for error in form.errors.items():
+      flash(error[1].pop(0))
+    return render_template('forms/edit_venue.html', form=form, venue=venue)
   try:
-    venue = Venue.query.get(venue_id);
     venue.name=form.name.data
     venue.city=form.city.data
     venue.state=form.state.data
@@ -417,6 +432,10 @@ def create_artist_submission():
   # TODO: modify data to be the data object returned from db insertion
   form = ArtistForm()
   error = False
+  if not form.validate_on_submit():
+    for error in form.errors.items():
+      flash(error[1].pop(0))
+    return render_template('forms/new_artist.html', form=form)
   try:
     artist = Artist(
                     name=form.name.data,
